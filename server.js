@@ -16,10 +16,15 @@ app.use(bodyParser.json()) ;
 app.use(bodyParser.urlencoded({ extended:true })) ;
 
 var users = {
-    kian : "123" ,
-    kiarash : "1234" ,
-    kianoosh : "12345"
+    amir : "123" ,
+    ali : "1234" ,
+    hasan : "12345"
 } ;
+
+var comments = {
+    "amir" : ["salam"] ,
+    "ali" : ["msg ali ."]
+} ; 
 
 app.get("/" , function (req, resp, next) {
     console.log(req.session);
@@ -27,16 +32,18 @@ app.get("/" , function (req, resp, next) {
 }) ;
 app.get("/login" , function (req, resp, next) {
     resp.sendFile(__dirname + "/static/login.html") ;
-}) ;app.post("/signup" , function (req, resp, next) {
-    if (req.body.username.length && req.body.password.length >= 4 ){
-        users[req.body.username] = req.body.password  ;
-        resp.json({ status : true , msg : "sabtenaame shodi ba passworde " + users[req.body.username] }) ;
-        console.log(users) ;
-    }
-    else {
-        resp.json({ status : false , msg : "amaliate sbte naam anjam nashod :| "}) ;
-    }
-}) ;
+});
+
+// app.post("/signup" , function (req, resp, next) {
+//     if (req.body.username.length && req.body.password.length >= 4 ){
+//         users[req.body.username] = req.body.password  ;
+//         resp.json({ status : true , msg : "sabtenaame shodi ba passworde " + users[req.body.username] }) ;
+//         console.log(users) ;
+//     }
+//     else {
+//         resp.json({ status : false , msg : "amaliate sbte naam anjam nashod :| "}) ;
+//     }
+// }) ;
 
 
 app.post("/" , function (req, resp, next) {
@@ -44,7 +51,7 @@ app.post("/" , function (req, resp, next) {
 }) ;
 
 app.post("/getinfo" , function(req , resp , next ){
-    resp.json(req.session);
+    resp.json(req.session.auth);
 })
 app.post("/login" , function (req, resp, next) {
     for (user in users) {
@@ -64,6 +71,11 @@ app.post("/login" , function (req, resp, next) {
     resp.json( {status : "false" , msg : "user yaft nashod"} ) ;
 }) ;
 
+app.post("/logout" , function( req , resp , next){
+    req.session.auth = {} ; 
+    resp.json({ status : true , msg : " logout shodi "}); 
+})
+
 
 app.post("/signup" , function (req, resp, next) {
     if (req.body.username.length && req.body.password.length >= 4 ){
@@ -75,6 +87,24 @@ app.post("/signup" , function (req, resp, next) {
         resp.json({ status : false , msg : "amaliate sbte naam anjam nashod :| "}) ;
     }
 }) ;
+
+app.post("/submitcomment" , function(req , resp , next){
+    if (req.session.auth['username'] != undefined){  // karbar user mibashad . 
+            if( comments[req.session.auth.username] != undefined ) {
+                comments[req.session.auth.username].push(req.body.msg) // matne comment dakhele araye update mishavad .
+            }else{
+                comments[req.session.auth.username] = (req.body.msg) // matne comment dakhele araye zakhire mishavad .
+            }
+            console.log(comments);
+            resp.json({status : true , msg : "comment zakhireh shod . "})
+    } else {
+        resp.json({status : false , msg : " lotfan login shavid "})
+    }
+}); 
+
+app.post("/getComment" , function(req , resp , next ){
+    resp.json(comments);
+})
 
 app.listen(8000) ;
 console.log("app running on port 8000") ;
