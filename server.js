@@ -3,6 +3,44 @@ var bodyParser = require("body-parser") ;
 var app = express() ;
 var morgan = require('morgan') ;
 var session = require('express-session');
+var mongoose = require('mongoose');
+
+mongoose.connect("mongodb://localhost/nodejspractis");
+var db = mongoose.connection ; 
+
+var humanShema = new mongoose.Schema({
+    name : String , 
+    age : Number ,
+    username : String
+});
+
+var humanmodel = mongoose.model("Human" , humanShema) ; 
+
+var amir = new humanmodel({
+    name : "amir" , 
+    age : 20 , 
+    username : "amirdehghan"
+}) ; 
+
+console.log(amir) ;
+console.log(amir.age) ; 
+
+amir.save(function(err , amir){
+    if (err) { throw err}
+    console.log(amir);
+})
+
+
+db.on('error', function(){
+    console.log(' vasl nashodi') ; 
+});
+db.once("connected" , function(){
+    console.log("connected. ");
+    humanmodel.findOne({ username : "kianP" } , function (err, user) {
+        if (err) {throw err}
+        console.log("find !!" , user) ;
+    }) ;
+});
 
 app.use(morgan('common'));
 
