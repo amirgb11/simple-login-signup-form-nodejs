@@ -9,9 +9,9 @@ $(document).ready(function () {
     }) ;
 
     $("#signUp").click(function () {
-        $.post("/signup" ,{ username : $("#signUpUser").val() ,password :  $("#signUpPass").val() } , function (data) {
+        $.post("/signup" ,{ username : $("#signUpUser").val() ,password :  $("#signUpPass").val() ,email : $("#signUpEmail").val() } , function (data) {
             $("#info").append("<p>" + data['status'] + " || " + data['msg'] + " </p>") ;
-        })
+        });
     }); 
 
 

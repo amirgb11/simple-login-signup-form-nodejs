@@ -8,38 +8,34 @@ var mongoose = require('mongoose');
 mongoose.connect("mongodb://localhost/nodejspractis");
 var db = mongoose.connection ; 
 
-var humanShema = new mongoose.Schema({
-    name : String , 
-    age : Number ,
-    username : String
+var userShema = new mongoose.Schema({
+    email : String , 
+    username : String , 
+    password : String
 });
 
-var humanmodel = mongoose.model("Human" , humanShema) ; 
+var usermodel = mongoose.model("user" , userShema) ; 
 
-var amir = new humanmodel({
-    name : "amir" , 
-    age : 20 , 
-    username : "amirdehghan"
-}) ; 
+// var amir = new usermodel({
+//     name : "amir" , 
+//     age : 20 , 
+//     username : "ami70rdehghan"
+// }) ; 
 
-console.log(amir) ;
-console.log(amir.age) ; 
+// console.log(amir) ;
+// console.log(amir.age) ; 
 
-amir.save(function(err , amir){
-    if (err) { throw err}
-    console.log(amir);
-})
+// amir.save(function(err , amir){
+//     if (err) { throw err}
+//     console.log(amir);
+// })
 
 
-db.on('error', function(){
-    console.log(' vasl nashodi') ; 
-});
+// db.on('error', function(){
+//     console.log(' vasl nashodi') ; 
+//});
 db.once("connected" , function(){
     console.log("connected. ");
-    humanmodel.findOne({ username : "kianP" } , function (err, user) {
-        if (err) {throw err}
-        console.log("find !!" , user) ;
-    }) ;
 });
 
 app.use(morgan('common'));
@@ -72,22 +68,6 @@ app.get("/login" , function (req, resp, next) {
     resp.sendFile(__dirname + "/static/login.html") ;
 });
 
-// app.post("/signup" , function (req, resp, next) {
-//     if (req.body.username.length && req.body.password.length >= 4 ){
-//         users[req.body.username] = req.body.password  ;
-//         resp.json({ status : true , msg : "sabtenaame shodi ba passworde " + users[req.body.username] }) ;
-//         console.log(users) ;
-//     }
-//     else {
-//         resp.json({ status : false , msg : "amaliate sbte naam anjam nashod :| "}) ;
-//     }
-// }) ;
-
-
-app.post("/" , function (req, resp, next) {
-    console.log("post") ;
-}) ;
-
 app.post("/getinfo" , function(req , resp , next ){
     resp.json(req.session.auth);
 })
@@ -112,19 +92,80 @@ app.post("/login" , function (req, resp, next) {
 app.post("/logout" , function( req , resp , next){
     req.session.auth = {} ; 
     resp.json({ status : true , msg : " logout shodi "}); 
-})
+});
 
 
-app.post("/signup" , function (req, resp, next) {
-    if (req.body.username.length && req.body.password.length >= 4 ){
-        users[req.body.username] = req.body.password  ;
-        resp.json({ status : true , msg : "sabtenaame shodi ba passworde " + users[req.body.username] }) ;
-        console.log(users) ;
-    }
-    else {
-        resp.json({ status : false , msg : "amaliate sbte naam anjam nashod :| "}) ;
-    }
-}) ;
+//app.post("/signup" , function (req, resp, next) {
+    // var formData = req.body;
+
+    // if( formData.username.length && formData.password.length ){
+    //     if (formData.password.length >= 4 ){
+    //         usermodel.find({username : formData.username} , function(err , users){
+    //             if(err ) { throw err} 
+    //             else if (users != undefined ){
+    //                 resp.json({ status : false , msg : " user tekrari . "})
+    //             } 
+    //             else {
+    //                 var newuser = new usermodel({
+    //                     email : formData.email || " " , 
+    //                     password : formData.password , 
+    //                     username : formData.username
+    //                 });
+    //                 console.log(newuser);
+    //                 newuser.save();
+    //                 resp.json({ status : true , msg : " sabte nam shodi :| "});
+    //             }
+    //         })
+    //     }
+    //     else{
+    //         resp.jsont({ status : false , msg : " passwor kotah ast "});
+    //     }
+    // }else {
+    //     resp.json({ status : false , msg : "filed hahe ejbari kamel shavad ." })
+    // }
+
+    app.post("/signup" , function (req, resp, next) {
+        var formData = req.body ;
+        if ( formData.username.length && formData.password.length ) {
+            if ( formData.password.length >= 4 ) {
+                usermodel.find({username : formData.username} , function (err, users) {
+                    if (err ) { throw err}
+                    else if ( users.length ) {
+                        resp.json({status : false , msg : "usere tekrari !  :( " })
+                    }
+                    else {
+                        var newUser = new usermodel({
+                            username : formData.username,
+                            password : formData.password,
+                            email : formData.email 
+                        });
+
+                        console.log(newUser) ;
+                        newUser.save() ;
+                        resp.json({status : true , msg : "sabtenam ba movafaghiat anjam shod .  "}) ;
+                     }
+                })
+            }
+            else {
+                resp.json({status : false , msg : "password bayad 4 ta bashe ya bishtar ! "} ) ;
+            }
+        }
+        else {
+            resp.json({status : false , msg : "username ya passowrd nadari ! :| "}) ;
+        }
+    
+    }) ;
+
+
+    // if (req.body.username.length && req.body.password.length >= 4 ){
+    //     users[req.body.username] = req.body.password  ;
+    //     resp.json({ status : true , msg : "sabtenaame shodi ba passworde " + users[req.body.username] }) ;
+    //     console.log(users) ;
+    // }
+    // else {
+    //     resp.json({ status : false , msg : "amaliate sbte naam anjam nashod :| "}) ;
+    // }
+//}) ;
 
 app.post("/submitcomment" , function(req , resp , next){
     if (req.session.auth['username'] != undefined){  // karbar user mibashad . 
@@ -146,4 +187,3 @@ app.post("/getComment" , function(req , resp , next ){
 
 app.listen(8000) ;
 console.log("app running on port 8000") ;
-

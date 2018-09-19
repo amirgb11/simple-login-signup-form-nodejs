@@ -1,0 +1,7 @@
+{
+    "port": 8000,
+    "files": ["./static/**/*.{html,htm,css,js}"],
+    "server" : {
+        "baseDir" : ["./static"]
+    } 
+}

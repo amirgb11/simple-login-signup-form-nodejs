@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "nodemon server.js",
+    "dev": "lite-server"
   },
   "dependencies": {
     "body-parser": "^1.10.2",
@@ -15,5 +16,8 @@
     "morgan": "^1.5.1"
   },
   "author": "Kian",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "lite-server": "^2.4.0"
+  }
 }
