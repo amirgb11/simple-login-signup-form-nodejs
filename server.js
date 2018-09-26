@@ -14,7 +14,15 @@ var userShema = new mongoose.Schema({
     password : String
 });
 
-var usermodel = mongoose.model("user" , userShema) ; 
+var commentSchema = new mongoose.Schema({
+    user : String ,
+    text : String , 
+    like : Number
+})
+
+var usermodel = mongoose.model("user" , userShema); 
+var commentModel = mongoose.model("comment" , commentSchema);
+
 
 // var amir = new usermodel({
 //     name : "amir" , 
@@ -72,21 +80,42 @@ app.post("/getinfo" , function(req , resp , next ){
     resp.json(req.session.auth);
 })
 app.post("/login" , function (req, resp, next) {
-    for (user in users) {
-        if ( req.body['username'] == user ) {
-            if (req.body['password'] == users[user]) {
+    // for (user in users) {
+    //     if ( req.body['username'] == user ) {
+    //         if (req.body['password'] == users[user]) {
+    //             req.session.auth = { username : req.body.username};
+    //             resp.json( {status : "true" , msg : "login shodi !"} ) ;
+    //             console.log(req.session);
+    //             return ;
+    //         }
+    //         else {
+    //             resp.json( {status : "false" , msg : "password qalat"} ) ;
+    //             return ;
+    //         }
+    //     }
+    // }
+    // resp.json( {status : "false" , msg : "user yaft nashod"} ) ;
+    if(req.auth != undefined){
+        resp.json({ status : false , msg : 'login hasti . '})
+    }
+    else {
+    usermodel.findOne({ username : req.body.username } , function(err , user){
+        if (err) { throw err}
+        if ( user != undefined){
+            if ( user.password == req.body.password){
                 req.session.auth = { username : req.body.username};
                 resp.json( {status : "true" , msg : "login shodi !"} ) ;
                 console.log(req.session);
-                return ;
             }
             else {
                 resp.json( {status : "false" , msg : "password qalat"} ) ;
-                return ;
             }
         }
-    }
-    resp.json( {status : "false" , msg : "user yaft nashod"} ) ;
+        else{
+            resp.json( {status : "false" , msg : "user yaft nashod"} ) ;
+        }
+    })
+}
 }) ;
 
 app.post("/logout" , function( req , resp , next){
@@ -169,20 +198,26 @@ app.post("/logout" , function( req , resp , next){
 
 app.post("/submitcomment" , function(req , resp , next){
     if (req.session.auth['username'] != undefined){  // karbar user mibashad . 
-            if( comments[req.session.auth.username] != undefined ) {
-                comments[req.session.auth.username].push(req.body.msg) // matne comment dakhele araye update mishavad .
-            }else{
-                comments[req.session.auth.username] = (req.body.msg) // matne comment dakhele araye zakhire mishavad .
-            }
-            console.log(comments);
-            resp.json({status : true , msg : "comment zakhireh shod . "})
+        commentModel.create({
+            user : req.session.auth['username'] , 
+            text : req.body.msg ,
+            like : 0  
+        } , function(err , comment){
+            if(err) { throw err}
+            console.log(comment)
+        })
     } else {
         resp.json({status : false , msg : " lotfan login shavid "})
     }
 }); 
 
 app.post("/getComment" , function(req , resp , next ){
-    resp.json(comments);
+    commentModel.find({} , function(err , comments){
+        if(err) { throw err}
+        else{
+            resp.json(comments);
+        }
+    })
 })
 
 app.listen(8000) ;

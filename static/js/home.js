@@ -16,13 +16,15 @@ $(document).ready(function () {
 
 
     // authentication
-    $.post("/getinfo" , function(data){
-        $("#auth").html(JSON.stringify(data));
+    $.post("/getInfo" , function (data) {
+        $("#auth").html(JSON.stringify(data)) ;
+        console.log(data) ; 
         if (data) {
-            $("#user").html(data.username);
-            isAuth = true;
+            $("#user").html(data['username']) ;
+            isAuth = true ;
         }
-    }) ; 
+    }) ;
+ 
 
     $("#submitcomment").click(function(){
     if(isAuth){
@@ -41,13 +43,16 @@ $(document).ready(function () {
         $("#Pcomment").css({ display: "block" });
     })
     
-    var getComment = function (){
-        $.post("/getComment" , {} , function(data){
-            for( var attr in data){
-                $("#commentbox").append( "<p> " + attr + " : " + data[attr].toString() + " </p> ");
-            }
-        })
-    }; 
+    var getComment = function () {
+        $.post("/getComment" , {} , function (data) {
+            data.forEach(function (cm , index) {
+                console.log(index , cm) ;
+                $("#commentBox").append("<p> " + cm.user + " mige : " + cm.text + "</p>") ;
+            });
+        }) ;
+    } ;
+
+    getComment();
 
     $("#logout").click(function(){
         $.post("/logout" , function(data){
