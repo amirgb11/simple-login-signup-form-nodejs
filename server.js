@@ -4,6 +4,7 @@ var app = express() ;
 var morgan = require('morgan') ;
 var session = require('express-session');
 var mongoose = require('mongoose');
+var mongoStore = require('connect-mongo')(session);
 
 mongoose.connect("mongodb://localhost/nodejspractis");
 var db = mongoose.connection ; 
@@ -51,17 +52,18 @@ app.use(morgan('common'));
 app.use(session({
     secret : "secret" , 
     resave : false , 
-    saveUninitialized : true 
+    saveUninitialized : true ,
+    store : new mongoStore({ mongooseConnection : db })
 }))
 app.use(express.static(__dirname + "/static")) ;
 app.use(bodyParser.json()) ;
 app.use(bodyParser.urlencoded({ extended:true })) ;
 
-var users = {
-    amir : "123" ,
-    ali : "1234" ,
-    hasan : "12345"
-} ;
+// var users = {
+//     amir : "123" ,
+//     ali : "1234" ,
+//     hasan : "12345"
+// } ;
 
 var comments = {
     "amir" : ["salam"] ,
@@ -95,7 +97,7 @@ app.post("/login" , function (req, resp, next) {
     //     }
     // }
     // resp.json( {status : "false" , msg : "user yaft nashod"} ) ;
-    if(req.auth != undefined){
+    if(req.session.auth != undefined){
         resp.json({ status : false , msg : 'login hasti . '})
     }
     else {
@@ -119,7 +121,8 @@ app.post("/login" , function (req, resp, next) {
 }) ;
 
 app.post("/logout" , function( req , resp , next){
-    req.session.auth = {} ; 
+    //req.session.auth = {} ; 
+    delete req.session.auth ;
     resp.json({ status : true , msg : " logout shodi "}); 
 });
 
