@@ -1,3 +1,14 @@
-p {
-    color: crimson;
+html , body {
+    margin: 0 ;
+    padding: 0;
+    text-align: left;
+};
+
+.jumbotron {
+    text-align: center;
+}
+
+.form-control {
+    padding: 2%;
+    margin: 2%
 }

@@ -5,7 +5,10 @@ $(document).ready(function () {
         //console.log({ username : $("#username").val() ,password :  $("#password").val() }) ;
         $.post("/login" , { username : $("#username").val() ,password :  $("#password").val() } , function (data) {
             $("#info").append("<p>" + data['status'] + " || " + data['msg'] + " </p>") ;
-        })
+            if (data['status']) {
+                getInfo() ;
+            };
+        });
     }) ;
 
     $("#signUp").click(function () {
@@ -19,10 +22,6 @@ $(document).ready(function () {
     $.post("/getInfo" , function (data) {
         $("#auth").html(JSON.stringify(data)) ;
         console.log(data) ; 
-        if (data) {
-            $("#user").html(data['username']) ;
-            isAuth = true ;
-        }
     }) ;
  
 
@@ -43,6 +42,20 @@ $(document).ready(function () {
         $("#Pcomment").css({ display: "block" });
     })
     
+    var getInfo = function () {
+        $("#commentBox").empty() ;
+        $.post("/getInfo" , function (data) {
+            if (data['status']) {
+                isAuth = true ;
+                getComment();
+                $("#auth").html(JSON.stringify(data['status'])) ;
+            }
+            else {
+                $("#auth").html("unknown user") ;
+            }
+        }) ;
+    }  ;
+
     var getComment = function () {
         $.post("/getComment" , {} , function (data) {
             data.forEach(function (cm , index) {
@@ -56,7 +69,11 @@ $(document).ready(function () {
 
     $("#logout").click(function(){
         $.post("/logout" , function(data){
-            $("#info").append("<p> " + data.status + " || " + data.msg + "</p> " ); 
+            $("#info").append("<p> " + data.status + " || " + data.msg + "</p> " );
+            if (data['status']) {
+                getInfo() ;
+            }
+             
         })
     })
 

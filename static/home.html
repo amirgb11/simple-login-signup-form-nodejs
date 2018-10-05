@@ -2,30 +2,104 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title></title>
+    <title>Node Js Practise</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/home.css">
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
     <script type="text/javascript" src="js/home.js"></script>
 </head>
 <body>
-<p>Home Page</p>
 
-<p> Authentication : <span id="auth"> -- </span> </p>
-<p> hello <span id="user"></span></p>
-<p> LOGIN </p>
-<div><input id="username"> <span>username</span> </div>
+<div class="jumbotron">
+   <div class="container" style="margin: 0 auto ; text-align: center">
+        <h1>Home Page</h1>
+        <span id="auth" class="label label-info"> -- </span>
+        
+    </div>
+</div> 
+<!-- jumbotron -->
 
-<div><input id="password"> <span>password</span> </div>
-<button id="login"> Login </button>
-<button id="logout"> Log Out </button><br>
 
+
+    <form class="form-horizontal">
+        <div class="form-group">
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" id="signUpUser" placeholder="UserName">
+                </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-4">
+            <input type="email" class="form-control" id="signUpEmail" placeholder="Email">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-4">
+            <input type="password" class="form-control" id="signUpPass" placeholder="Password">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox"> Remember me
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button class="btn btn-default" id="signUp">Sign Up</button>
+          </div>
+        </div>
+      </form>
+      
+      <form class="form-horizontal">
+            <div class="form-group">
+                    <div class="col-sm-4">
+                      <input type="text" class="form-control" id="username" placeholder="UserName">
+                    </div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-4">
+                <input type="password" class="form-control" id="passowrd" placeholder="Password">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-offset-2 col-sm-10">
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox"> Remember me
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-offset-2 col-sm-10">
+                <button class="btn btn-default" id="login">Login</button>
+                <button class="btn btn-default" id="logout">LogOut</button>
+              </div>
+            </div>
+          </form>
+    
+
+   <!-- </div> 
+   jumbotron -->
+<!-- </div> -->
+
+<!-- <p> LOGIN </p>
+<div><input id="username"> <span>username</span> </div> -->
+
+<!-- <div><input id="password"> <span>password</span> </div> -->
+<!-- <button id="login"> Login </button>
+<button id="logout"> Log Out </button><br> -->
+<!-- 
 
 <p> SIGN UP </p>
 <div><input id="signUpUser"> <span> Username</span></div>
 <div><input id="signUpPass"> <span> Password </span></div>
 <div><input id="signUpEmail"> <span> Email</span></div>
 
-<button id="signUp"> Sign Up !</button>
+<button id="signUp"> Sign Up !</button> -->
 
 <p> Comment </p>
 <div><input id="msg"> <span> : Msg </span></div>
@@ -40,5 +114,6 @@
     info :
 
 </div>
+
 </body>
 </html>
